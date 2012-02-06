@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+                                 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                                 http://www.springframework.org/schema/security
+                                 http://www.springframework.org/schema/security/spring-security-3.0.xsd
+                                 http://www.springframework.org/schema/context
+                                 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:component-scan base-package="tudu.security"/>
+
+    <global-method-security secured-annotations="enabled"/>
+
+    <http>
+        <intercept-url pattern="/ajax/**" access="ROLE_USER"/>
+        <intercept-url pattern="/tudu/welcome" access="ROLE_ANONYMOUS,ROLE_USER"/>
+        <intercept-url pattern="/tudu/recoverPassword" access="ROLE_ANONYMOUS,ROLE_USER"/>
+        <intercept-url pattern="/tudu/register" access="ROLE_ANONYMOUS,ROLE_USER"/>
+        <intercept-url pattern="/tudu/admin" access="ROLE_ADMIN"/>
+        <intercept-url pattern="/tudu/**" access="ROLE_USER"/>
+        <intercept-url pattern="/servlet/**" access="ROLE_USER"/>
+
+        <form-login login-processing-url="/tudu/login"
+                    login-page="/tudu/welcome"
+                    authentication-failure-url="/tudu/welcome?authentication=failure"
+                    default-target-url="/tudu/lists"
+                    always-use-default-target="true"/>
+
+        <remember-me key="tuduRocks"/>
+        <logout logout-url="/tudu/logout"/>
+    </http>
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="userDetailsService"/>
+    </authentication-manager>
+
+</beans:beans>
